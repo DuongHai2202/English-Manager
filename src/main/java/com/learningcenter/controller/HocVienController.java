@@ -3,7 +3,7 @@ package com.learningcenter.controller;
 import com.learningcenter.dao.HocVienDAO;
 import com.learningcenter.model.HocVien;
 import com.learningcenter.view.dialog.HocVienDialog;
-import com.learningcenter.view.panel.StudentManagementPanel;
+import com.learningcenter.view.panel.HocVienPanel;
 import com.opencsv.CSVWriter;
 import java.awt.Frame;
 import java.io.FileOutputStream;
@@ -16,10 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class HocVienController {
-    private StudentManagementPanel view;
+    private HocVienPanel view;
     private HocVienDAO dao;
 
-    public HocVienController(StudentManagementPanel view) {
+    public HocVienController(HocVienPanel view) {
         this.view = view;
         this.dao = new HocVienDAO();
         initListeners();
@@ -55,6 +55,7 @@ public class HocVienController {
             if (dao.add(dialog.getStudent())) {
                 JOptionPane.showMessageDialog(view, "Thêm học viên thành công!");
                 loadDataToTable();
+                DashboardController.refreshData();
             } else {
                 JOptionPane.showMessageDialog(view, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -76,6 +77,7 @@ public class HocVienController {
             if (dao.update(dialog.getStudent())) {
                 JOptionPane.showMessageDialog(view, "Cập nhật thành công!");
                 loadDataToTable();
+                DashboardController.refreshData();
             } else {
                 JOptionPane.showMessageDialog(view, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -116,6 +118,7 @@ public class HocVienController {
             if (dao.delete(selected.getIdHocVien())) {
                 JOptionPane.showMessageDialog(view, "Đã xóa học viên!");
                 loadDataToTable();
+                DashboardController.refreshData();
             } else {
                 JOptionPane.showMessageDialog(view, "Xóa thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }

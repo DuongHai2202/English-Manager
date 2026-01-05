@@ -115,4 +115,9 @@ public class HocVien {
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
     }
+
+    @Override
+    public String toString() {
+        return maHocVien + " - " + hoTen;
+    }
 }

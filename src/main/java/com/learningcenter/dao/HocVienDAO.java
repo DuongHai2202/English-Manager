@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HocVienDAO {
-
     public List<HocVien> getAll() {
         return search("", "Tất cả");
     }
@@ -15,14 +14,22 @@ public class HocVienDAO {
     public List<HocVien> search(String keyword, String criteria) {
         List<HocVien> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM HOC_VIEN WHERE 1=1");
+        List<Object> params = new ArrayList<>();
 
         if (keyword != null && !keyword.trim().isEmpty()) {
+            String val = "%" + keyword.trim() + "%";
             if ("Theo tên".equals(criteria)) {
                 sql.append(" AND HoTen LIKE ?");
+                params.add(val);
             } else if ("Theo mã".equals(criteria)) {
                 sql.append(" AND MaHocVien LIKE ?");
+                params.add(val);
+            } else if ("Theo id".equals(criteria)) {
+                sql.append(" AND ID_HocVien LIKE ?");
             } else { // Tất cả
                 sql.append(" AND (HoTen LIKE ? OR MaHocVien LIKE ?)");
+                params.add(val);
+                params.add(val);
             }
         }
 
@@ -31,14 +38,9 @@ public class HocVienDAO {
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                String val = "%" + keyword.trim() + "%";
-                if ("Tất cả".equals(criteria)) {
-                    ps.setString(1, val);
-                    ps.setString(2, val);
-                } else {
-                    ps.setString(1, val);
-                }
+            // Gán tham số động
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
             }
 
             try (ResultSet rs = ps.executeQuery()) {
